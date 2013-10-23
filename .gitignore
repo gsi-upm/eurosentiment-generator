@@ -1,0 +1,12 @@
+marlgenerator/migrations
+*.swp
+.*
+settings.py
+static/admin
+static/bootstrap
+venv
+*.pyc
+*.log*
+*.bak
+media/
+static/*

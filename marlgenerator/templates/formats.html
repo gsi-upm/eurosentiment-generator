@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load eurotags %}
+
+{% block main %}
+<h1>Supported formats</h1>
+<ul>
+{% for format in formats %}
+<li> {{ format.name }}
+<ul>
+    <li> {{ format.description }}</li>
+    {% if format.example %}
+    <li> <a href="{{ format.example.path | to_url }}" >Example file</a> </li> 
+    {% endif %}
+</ul>
+</li>
+{% endfor %}
+</ul>
+<h1>Templates available</h1>
+<ul>
+{% for template in templates %}
+<li> {{ template.name }}
+<ul>
+    <li> Input: {{ template.inputformat.name }}</li>
+    <li> Output: {{ template.outputformat.name }}</li>
+</ul>
+</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

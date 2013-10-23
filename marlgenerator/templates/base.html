@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    </head>
+    <body>
+    </body>
+</html>
+
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>{% block title %}Marl generator{% endblock %}</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="/eurosentiment/static/eurosentiment/css/style.css" title="style" />
+        {% block extra_js %}
+        {% endblock %}
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <a href="http://eurosentiment.eu"><img class="eulogo" src="/eurosentiment/static/eurosentiment/img/logo.png"/></a>
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="{% url 'marlgenerator.views.home' %}">Euro<span class="logo_colour">Sentiment</span></a></h1>
+          <a href="http://gsi.dit.upm.es/ontologies/marl"><img src="/eurosentiment/static/eurosentiment/img/marl_logo.png"/><h2> Generator</h2></a>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="{% url  'marlgenerator.views.home' %}">About</a></li>
+          <li><a href="{% url  'marlgenerator.views.process' %}">Translate</a></li>
+          <li><a href="{% url  'marlgenerator.views.formats' %}">Formats</a></li>
+          <li><a href="{% url  'marlgenerator.views.api' %}">API</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <!--<div class="sidebar">-->
+        <!--[> insert your sidebar items here <]-->
+        <!--<h3>Latest News</h3>-->
+        <!--<h4>New Website Launched</h4>-->
+        <!--<h5>August 1st, 2013</h5>-->
+        <!--<p>2013 sees the redesign of our website. Take a look around and let us know what you think.<br /><a href="#">Read more</a></p>-->
+        <!--<p></p>-->
+        <!--<h4>New Website Launched</h4>-->
+        <!--<h5>August 1st, 2013</h5>-->
+        <!--<p>2013 sees the redesign of our website. Take a look around and let us know what you think.<br /><a href="#">Read more</a></p>-->
+        <!--<h3>Useful Links</h3>-->
+        <!--<ul>-->
+          <!--<li><a href="#">link 1</a></li>-->
+          <!--<li><a href="#">link 2</a></li>-->
+          <!--<li><a href="#">link 3</a></li>-->
+          <!--<li><a href="#">link 4</a></li>-->
+        <!--</ul>-->
+        <!--<h3>Search</h3>-->
+        <!--<form method="post" action="#" id="search_form">-->
+          <!--<p>-->
+            <!--<input class="search" type="text" name="search_field" value="Enter keywords....." />-->
+            <!--<input name="search" type="image" style="border: 0; margin: 0 0 -9px 5px;" src="style/search.png" alt="Search" title="Search" />-->
+          <!--</p>-->
+        <!--</form>-->
+      <!--</div>-->
+      <div id="content">
+          {% block main %}
+          {% endblock %}
+      </div>
+        <div class="separator"></div>
+        <p class="gsi-banner">Brought to you by: <a href="http://gsi.dit.upm.es"><img class="gsi-logo" src="/eurosentiment/static/eurosentiment/img/logo-gsi.png"/></a></p>
+    </div>
+    <div id="footer">
+        <p>
+        This demonstrator has been made possible by the <a href="http://eurosentiment.eu"><span style="text-transform:uppercase;">eurosentiment project</span></a><br>
+        Grant Agreement no:
+        296277<br>
+        Starting
+        date:
+        01/09/2012<br>
+        Project
+        duration:
+        24
+        months
+        </p>
+
+      <p class="copyright">Copyright &copy; textured_blue | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">design from HTML5webtemplates.co.uk</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

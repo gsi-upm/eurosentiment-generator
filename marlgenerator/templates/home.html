@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h1> Marl Generator </h1>
+<h2> A tool to convert external formats to <a
+        href="http://gsi.dit.upm.es/ontologies/marl">MARL</a> </h2>
+
+<p>This tool will take several input formats and translates them to the Marl
+format.
+</p>
+
+<p>
+Marl Generator is under heavy development. As of this writing, it supports:
+<ul>
+    <li>Creating and administrating translation templates (admin level)</li>
+    <li>Editing templates to convert traditional formats (csv, tsv, xls)
+    formats to Marl</li>
+    <li>Using the available templates to translate known formats through this
+    portal or via POST requests</li>
+    <li>Saving or outputting the result</li>
+</ul>
+</p>
+
+<p>
+In the future, we might include the following features:
+<ul>
+    <li>Conversion of semantic formats</li>
+    <li>Automatic translation between semantic formats (e.g. RDF to JSON-LD)</li>
+    <li>Auto selection of the best template based on the input format</li>
+</ul>
+</p>
+
+{% endblock %}

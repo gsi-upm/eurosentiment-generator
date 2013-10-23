@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load eurotags %}
+
+{% block main %}
+<h1>How to use marlgenerator's API</h1>
+<p>To access the API just send a POST request to <a href="http://demos.gsi.dit.upm.es">http://demos.gsi.dit.upm.es</a> with two parameters:
+<ul>
+<li>template: The ID of the desired template.</li>
+<li>document: Document to translate.</li>
+</ul>
+</p>
+<p>On GNU/Linux, you can test the the API using <a href="http://curl.haxx.se/">curl</a>. A request would look like this:  
+</p>
+<code>
+curl -F"template=PT_HA_to_Marl" -F"document=@PT_HA_example.csv" http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator/process
+</code>
+
+{% endblock %}
