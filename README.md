@@ -1,12 +1,12 @@
 ![GSI Logo](http://gsi.dit.upm.es/templates/jgsi/images/logo.png)
-[Semantic Generator](http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator) 
+[Eurosentiment Generator](http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator) 
 ==================================
 
 Introduction
 ---------------------
 This tool will take several input formats and translates them to semantic formats. It focuses on outputting the [Marl](http://gsi.dit.upm.es/ontologies/marl) format in json-ld.
 
-Semantic Generator is under heavy development. As of this writing, it supports:
+Eurosentiment Generator is under heavy development. As of this writing, it supports:
 
 * Creating and administrating translation templates (admin level)
 * Editing templates to convert traditional formats (csv, tsv, xls) formats to Marl and Onyx.
@@ -21,7 +21,7 @@ In the future, we might include the following features:
 
 Installation instructions
 ------------------------------
-This repository contains all the code necessary to run a semanticgenerator. To install it, follow the following steps:
+This repository contains all the code necessary to run an eurosentiment-generator. To install it, follow the following steps:
 
 * Copy the eurosentiment/settings.py.template to eurosentiment/settings.py
 * Add your database information to settings.py
