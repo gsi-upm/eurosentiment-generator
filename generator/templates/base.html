@@ -12,7 +12,7 @@
 <html>
 
 <head>
-  <title>{% block title %}Marl generator{% endblock %}</title>
+  <title>{% block title %}Eurosentiment Generator{% endblock %}</title>
   <meta name="description" content="website description" />
   <meta name="keywords" content="website keywords, website keywords" />
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
@@ -28,17 +28,17 @@
         <a href="http://eurosentiment.eu"><img class="eulogo" src="/eurosentiment/static/eurosentiment/img/logo.png"/></a>
         <div id="logo_text">
           <!-- class="logo_colour", allows you to change the colour of the text -->
-          <h1><a href="{% url 'marlgenerator.views.home' %}">Euro<span class="logo_colour">Sentiment</span></a></h1>
+          <h1><a href="{% url 'generator.views.home' %}">Euro<span class="logo_colour">Sentiment</span></a></h1>
           <a href="http://gsi.dit.upm.es/ontologies/marl"><img src="/eurosentiment/static/eurosentiment/img/marl_logo.png"/><h2> Generator</h2></a>
         </div>
       </div>
       <div id="menubar">
         <ul id="menu">
           <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
-          <li><a href="{% url  'marlgenerator.views.home' %}">About</a></li>
-          <li><a href="{% url  'marlgenerator.views.process' %}">Translate</a></li>
-          <li><a href="{% url  'marlgenerator.views.formats' %}">Formats</a></li>
-          <li><a href="{% url  'marlgenerator.views.api' %}">API</a></li>
+          <li><a href="{% url  'generator.views.home' %}">About</a></li>
+          <li><a href="{% url  'generator.views.process' %}">Translate</a></li>
+          <li><a href="{% url  'generator.views.formats' %}">Formats</a></li>
+          <li><a href="{% url  'generator.views.api' %}">API</a></li>
         </ul>
       </div>
     </div>

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #    Copyright 2013 J. Fernando Sánchez Rada - Grupo de Sistemas Inteligentes
 #                                                       DIT, UPM
 #

@@ -1,4 +1,4 @@
-marlgenerator/migrations
+generator/migrations
 *.swp
 .*
 settings.py

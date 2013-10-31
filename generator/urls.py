@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #    Copyright 2013 J. Fernando Sánchez Rada - Grupo de Sistemas Inteligentes
 #                                                       DIT, UPM
 #
@@ -17,7 +18,7 @@ from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from marlgenerator import views
+from generator import views
 
 urlpatterns = patterns('',
     # Examples:

@@ -1,5 +1,5 @@
 ![GSI Logo](http://gsi.dit.upm.es/templates/jgsi/images/logo.png)
-[Eurosentiment Generator](http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator) 
+[Eurosentiment Generator](http://demos.gsi.dit.upm.es/eurosentiment/generator) 
 ==================================
 
 Introduction

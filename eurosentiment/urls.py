@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #  Copyright 2013 J. Fernando Sánchez Rada - Grupo de Sistemas Inteligentes
 #                                                 (GSI) DIT, UPM
 #
@@ -29,5 +30,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      url(r'^admin/', include(admin.site.urls)),
-     url(r'^marlgenerator/', include('marlgenerator.urls')),
+     url(r'^(marl)?generator/', include('generator.urls')),
 )

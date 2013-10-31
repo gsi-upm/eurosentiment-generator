@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block main %}
 <h1>Eurosentiment format translation</h1>
-<form action="{% url 'marlgenerator.views.process' %}" method="post" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>{% csrf_token %}
+<form action="{% url 'generator.views.process' %}" method="post" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>{% csrf_token %}
 {{ form.as_p }}
 <input type="submit" value="Submit" />
 </form>

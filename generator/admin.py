@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #  Copyright 2013 J. Fernando Sánchez Rada - Grupo de Sistemas Inteligentes
 #                                                 (GSI) DIT, UPM
 #
@@ -20,7 +21,7 @@ from models import EuTemplate, EuFormat, TranslationRequest
 
 class RequestAdmin(admin.ModelAdmin):
     readonly_fields = ('document', 'started')
-    list_display = ('template', 'inputformat', 'outputformat', 'ip')
+    list_display = ('started', 'template', 'inputformat', 'outputformat', 'ip')
     search_fields = ('started', 'template', 'inputformat',
                      'outputformat', 'ip', 'document')
     list_filter = ('started', 'template', 'inputformat',
