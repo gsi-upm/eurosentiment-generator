@@ -28,6 +28,7 @@ class TranslationRequestForm(forms.ModelForm):
         ('outformat', 'o'),
         ('base', 'u'),
         ('prefix', 'p'),
+        ('language', 'l'),
         ('template', 't')
     )
     required_css_class = 'required'
