@@ -25,7 +25,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from models import EuTemplate, EuFormat, TranslationRequest
 from .forms import TranslationRequestForm
 from utils import *
-import sys
+import sys, os
 
 import logging
 logger = logging.getLogger('eurosentiment')
@@ -36,7 +36,7 @@ def home(request):
     supported = {}
     templates = EuTemplate.objects.all()
     for t in templates:
-        supported[t] = {'input': t.inputformat, 'output': t.outputformat}
+        supported[t] = {'input': t.informat, 'output': t.informat}
     logger.debug(supported)
     return render_to_response('home.html', {'supported': supported},
                               RequestContext(request))
@@ -52,25 +52,33 @@ def process(request):
         if form.is_valid():
             logger.debug("Valid form!")
             try:
+                logger.debug('Form')
+                #logger.debug('Form:%s' % form)
+                logger.debug('TheForm')
                 req = TranslationRequest()
+                logger.debug('Processed')
                 req.template = form.cleaned_data['template']
                 req.document = form.cleaned_data['document']
-                req.inputformat = req.template.inputformat
-                req.outputformat = req.template.outputformat
+                req.informat = req.template.informat
+                req.outformat = req.template.outformat
                 req.ip = get_client_ip(request)
                 logger.debug("Got IP")
                 req.save()
                 return process_document(req, form, request)
             except Exception as ex:
-                logger.debug("Something bad happened")
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                logger.debug('Something bad happened in view:')
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                logger.debug(exc_type, fname, exc_tb.tb_lineno)
                 logger.debug(ex)
         else:
+            field_errors = [(field.label, field.errors) for field in form]
+            logger.debug(field_errors)
             logger.error("Invalid Form")
-
-        return HttpResponseBadRequest('Bad form')
+        #return HttpResponseBadRequest('Bad form')
     else:
-        form = TranslationRequestForm()
-        return render(request, 'upload.html', {'form': form})
+        form = TranslationRequestForm(initial={'toFile': False})
+    return render(request, 'upload.html', {'form': form})
 
 def formats(request):
     formats = EuFormat.objects.all()

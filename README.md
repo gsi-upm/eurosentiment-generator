@@ -9,15 +9,46 @@ This tool will take several input formats and translates them to semantic format
 Eurosentiment Generator is under heavy development. As of this writing, it supports:
 
 * Creating and administrating translation templates (admin level)
-* Editing templates to convert traditional formats (csv, tsv, xls) formats to Marl and Onyx.
+* Editing templates to convert traditional formats (csv, tsv, xls, xml) formats to NIF+Marl+Onyx.
 * Using the available templates to translate known formats through this portal or via POST requests
 * Saving or outputting the result
+* HTTP API
+* Logging translation requests
 
 In the future, we might include the following features:
 * Conversion of semantic formats
 * Automatic translation between semantic formats (e.g. [RDF](http://www.w3.org/RDF/) to [JSON-LD](http://json-ld.org/))
 * Auto selection of the best template based on the input format
 
+Translating a document
+----------------------
+Documents can be translated via the Web Interface or using the REST interface.
+Actually, the form in the Web is simply a convenient way of accessing the REST interface which shows all the available templates and a field to upload the desired file.
+
+The Generator endpoint takes the following parameters:
+
+ * input (i): The original file to be translated
+ * informat (f): The format of the original file
+ * intype (t) [Optional]:
+    * direct (default)
+    * url
+    * file
+ * outformat (o):
+    * json-ld
+    * rdfxml
+    * turtle (default, to comply with NIF)
+    * ntriples
+    * trix
+ * base URI (u) [Optional]: base URI to use for the corpus
+ * prefix (p) [Optional]: prefix to replace the base URI
+ * template (t) [Optional]: ID of the template to use. If it is omitted, a template to convert from informat to outformat will be used, or a template from informat to another format (e.g. json-ld), with automatic conversion.
+ * toFile [Optional]: Whether the result should be sent in the response (default) or written to a file. For convenience, this value defaults to False when using the Web Form.
+
+Using the command line tool *curl*, a request can be made like this:
+
+    curl -F"template=Example_to_Marl" -F"input=@input-file.csv" -F"intype=DIRECT"
+        http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator/process
+        > result.jsonld
 
 Installation instructions
 ------------------------------

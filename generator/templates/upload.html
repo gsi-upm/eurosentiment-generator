@@ -1,4 +1,33 @@
 {% extends 'base.html' %}
+
+{% block extra_js %}
+    <script>
+        window.onload = function() {
+            var documentfield = document.getElementById("id_document").parentNode;
+            var urlfield = document.getElementById("id_document_url").parentNode;
+            var intype = document.getElementById("id_intype");
+            for (var i=0; i<intype.length; i++){
+                if (intype.options[i].value == 'DIRECT' )
+                        intype.remove(i);
+            }
+            urlfield.style.display = 'None';
+            documentfield.style.display = 'inline';
+            console.log("tweakform", intype);
+            intype.onchange = function(){
+                if( intype.value === 'FILE'){
+                    urlfield.style.display = 'None';
+                    documentfield.style.display = 'inline';
+                }else if ( intype.value === 'URL' ){
+                    urlfield.style.display = 'inline';
+                    documentfield.style.display = 'none';
+                }else{
+                    urlfield.style.display = 'none';
+                    documentfield.style.display = 'none';
+                }
+            }
+        }
+    </script>
+{% endblock %}
 {% block main %}
 <h1>Eurosentiment format translation</h1>
 <form action="{% url 'generator.views.process' %}" method="post" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>{% csrf_token %}

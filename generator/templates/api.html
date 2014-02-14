@@ -3,16 +3,48 @@
 
 {% block main %}
 <h1>How to use the Eurosentiment Generator's API</h1>
-<p>To access the API just send a POST request to <a href="http://demos.gsi.dit.upm.es">http://demos.gsi.dit.upm.es</a> with two parameters:
-<ul>
-<li>template: The ID of the desired template.</li>
-<li>document: Document to translate.</li>
-</ul>
+<p>To access the API just send a POST request to <a
+    href="http://demos.gsi.dit.upm.es">http://demos.gsi.dit.upm.es</a> with
+these parameters:
+<dl>
+    <dt>input (i):</dt>
+        <dd>The original file to be translated</dd>
+    <dt>informat (f):</dt>
+        <dd>The format of the original file</dd>
+    <dt>intype (t) [Optional]:</dt>
+        <dd>
+        <ul>
+            <li>direct (default)</li>
+            <li>url</li>
+            <li>file</li>
+        </ul></dd>
+    <dt>outformat (o):</dt>
+    <dd>
+    <ul>
+        <li>json-ld (default)</li>
+        <li>rdfxml</li>
+        <li>turtle</li>
+        <li>ntriples</li>
+        <li>trix</li>
+    </ul></dd>
+    <dt>base URI (u) [Optional]:</dt>
+        <dd>base URI to use for the corpus</dd>
+    <dt>prefix (p) [Optional]:</dt>
+        <dd>prefix to replace the base URI</dd>
+    <dt>template (t) [Optional]:<dt>
+        <dd>ID of the template to use. If it is omitted, a template to convert from informat to outformat will be used, or a template from informat to another format (e.g. json-ld), with automatic conversion.
+    <dt>toFile [Optional]:</dt>
+        <dd>Whether the result should be sent in the response (default) or written to a file. For convenience, this value defaults to False when using the Web Form.</dd>  
+</dl>
 </p>
 <p>On GNU/Linux, you can test the the API using <a href="http://curl.haxx.se/">curl</a>. A request would look like this:  
 </p>
+<pre>
 <code>
-curl -F"template=PT_HA_to_Marl" -F"document=@PT_HA_example.csv" http://demos.gsi.dit.upm.es/eurosentiment/generator/process
+    curl http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator/process \
+    -F"intype=FILE" -F"template=Example_to_Marl" -F"input=@input-file.csv" \
+    > result.jsonld
 </code>
+</pre>
 
 {% endblock %}

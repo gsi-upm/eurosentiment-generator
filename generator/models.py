@@ -19,14 +19,22 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import datetime, date
 
+OUTFORMATS = (
+    ('jsonld', 'JSON-LD'),
+    ('rdf', 'RDF+XML'),
+    ('nt', 'N-Triples'),
+    ('trix', 'TRIX'),
+)
+
 def validate_name(name):
-    valid = ' ' not in name
+    valid = True
     try:
         name.encode('ascii')
     except UnicodeEncodeError:
         valid = False
     if not valid:
         raise ValidationError('Choose a name with ascii characters, without spaces')
+    return valid
 
 
 class EuFormat(models.Model):
@@ -34,12 +42,14 @@ class EuFormat(models.Model):
     TSV = 'tsv'
     ODS = 'ods'
     XLS = 'xls'
-    JSONLD = 'json-ld'
+    JSONLD = 'jsonld'
+    XML = 'xml'
     fileformats = ((CSV, 'csv - Comma Separated Values'),
                    (TSV, 'tsv - Tab Separated Values'),
                    (ODS, 'ods - Open Document Spreadsheet'),
                    (XLS, 'xls - Microsoft Excel Spreadsheet'),
-                   (JSONLD, 'json-ld - JSON for Linked Data')
+                   (JSONLD, 'json-ld - JSON for Linked Data'),
+                   (XML, 'XML - XML format')
                     )
     name = models.CharField('Format name', max_length=200, unique=True)
     extension = models.CharField('File extension', max_length=10, choices=fileformats, default=CSV)
@@ -58,8 +68,8 @@ class EuFormat(models.Model):
 class EuTemplate(models.Model):
     name = models.CharField('Template name', max_length=200, validators=[validate_name], unique=True)
     text = models.TextField('Template')
-    inputformat = models.ForeignKey(EuFormat, related_name='templateinput', verbose_name='Input format')
-    outputformat = models.ForeignKey(EuFormat, related_name='templateoutput', verbose_name='Output format')
+    informat = models.ForeignKey(EuFormat, related_name='templateinput', verbose_name='Input format')
+    outformat = models.CharField(max_length=10, choices=OUTFORMATS, verbose_name='Output format')
     usedTimes = models.IntegerField('Times it has been used', default=0, editable=False)
 
     def __unicode__(self):
@@ -68,20 +78,36 @@ class EuTemplate(models.Model):
     class Meta:
         verbose_name = "Conversion Template"
 
+
 class TranslationRequest(models.Model):
+    INTYPES = (
+        ('DIRECT', 'Direct'),
+        ('FILE', 'File'),
+        ('URL', 'Specify the file URL'),
+    )
 
     def doc_url(self, filename):
-        path = 'documents/%s/%s/%s' % (self.started.strftime("%Y-%m-%d"), self.ip, filename)
+        path = 'documents/%s/%s/%s' % (self.started.strftime("%Y-%m-%d"),
+                                       self.ip, filename)
         print 'The path is: %s' % path
         return path
 
     template = models.ForeignKey(EuTemplate, related_name='request',
                                  verbose_name='Template used')
-    document = models.FileField(upload_to=doc_url)
-    inputformat = models.ForeignKey(EuFormat, related_name='fileinput', verbose_name='Input format')
-    outputformat = models.ForeignKey(EuFormat, related_name='fileoutput', verbose_name='output format')
+    document = models.FileField(upload_to=doc_url, blank=True)
+    document_url = models.URLField(blank=True)
+    intype = models.CharField('Input Type', max_length=10, blank=False,
+                              choices=INTYPES, default='FILE')
+    informat = models.ForeignKey(EuFormat, related_name='fileinput',
+                                 verbose_name='Input format')
+    outformat = models.CharField(max_length=10, choices=OUTFORMATS,
+                                 verbose_name='output format',
+                                 default='JSONLD')
+    baseuri = models.CharField('Base URI', max_length=200, blank=True)
+    prefix = models.CharField('Prefix', max_length=20, blank=True)
     ip = models.GenericIPAddressField('Request IP')
-    started  = models.DateTimeField()
+    toFile = models.BooleanField(default=True)
+    started = models.DateTimeField()
 
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
@@ -89,5 +115,5 @@ class TranslationRequest(models.Model):
         return super(TranslationRequest, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return 'Request from %s - Template: %s - Input: %s - Output: %s' % (self.ip, self.template, self.inputformat, self.outputformat)
-
+        return 'Request from %s - Template: %s - Input: %s - Output: %s' \
+               % (self.ip, self.template, self.informat, self.outformat)

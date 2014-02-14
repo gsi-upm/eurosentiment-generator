@@ -21,13 +21,12 @@ from models import EuTemplate, EuFormat, TranslationRequest
 
 class RequestAdmin(admin.ModelAdmin):
     readonly_fields = ('document', 'started')
-    list_display = ('started', 'template', 'inputformat', 'outputformat', 'ip')
-    search_fields = ('started', 'template', 'inputformat',
-                     'outputformat', 'ip', 'document')
-    list_filter = ('started', 'template', 'inputformat',
-                   'outputformat', 'ip', 'document')
+    list_display = ('started', 'template', 'informat', 'outformat', 'ip')
+    search_fields = ('started', 'template', 'informat',
+                     'outformat', 'ip', 'document')
+    list_filter = ('started', 'template', 'informat',
+                   'outformat', 'ip', 'document')
 
 admin.site.register(EuTemplate)
 admin.site.register(EuFormat)
 admin.site.register(TranslationRequest, RequestAdmin)
-

@@ -22,6 +22,7 @@ from django.http import HttpResponse
 import traceback
 import json
 import xlrd
+from lxml import etree
 
 # import the logging library
 import logging
@@ -49,25 +50,31 @@ def get_client_ip(request):
     return ip
 
 def process_document(trans, form, httprequest):
-    #import sys
-    #reload(sys)
-    #sys.setdefaultencoding('utf-8')
     logger.debug("PROCESSING!!")
+    data = form.cleaned_data
+    logger.debug("DATA!! %s" % data)
     env = Environment(trim_blocks=True,lstrip_blocks=True )
     env.globals['linesplit'] = linesplit
     env.filters['escapejs'] = escapejs
+    logger.debug('not past template')
+    logger.debug('Template: %s - %s' % (type(trans.template.text), trans.template.text))
     template = env.from_string(trans.template.text)
+    logger.debug('past template')
     filename = trans.document.path
-    iext = ".%s" % trans.inputformat.extension
-    oext = ".%s" % trans.outputformat.extension
-    outputfile = "%s-%s.%s" % (iext.join(filename.rsplit(iext)[:-1]), "translated", oext)
+    iext = ".%s" % trans.informat.extension
+    oext = ".%s" % trans.outformat
+    outputfile = "%s-%s%s" % (iext.join(filename.rsplit(iext)[:-1]), "translated", oext)
     logger.debug("######## File: %s" % outputfile)
-    if trans.inputformat.mimetype == 'application/vnd.ms-excel':
+    if trans.informat.mimetype == 'application/vnd.ms-excel':
         logger.debug('An office file!')
         f = xlrd.open_workbook(filename, on_demand=True)
+    elif trans.informat.mimetype == 'application/xml':
+        logger.debug('An XML file!')
+        f = etree.parse(filename)
     else:
         f = open(filename, 'r')
-    stream = template.stream(f=f, filename=filename)
+    data['f'] = f
+    stream = template.stream(data, filename=filename)
     if "toFile" in form.cleaned_data and form.cleaned_data["toFile"]:
         try:
             stream.dump(outputfile)
@@ -76,7 +83,10 @@ def process_document(trans, form, httprequest):
             fname = outputfile.split('/var/www')[1]
             return render(httprequest, 'success.html', {'file': fname})
         except Exception as ex:
-            logger.error('Something bad happened:')
-            logger.error(ex)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            logger.debug('Something bad happened during process:')
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            logger.debug(exc_type, fname, exc_tb.tb_lineno)
+            logger.debug('Raising')
             raise ex
     return HttpResponse(stream, mimetype="text/html")

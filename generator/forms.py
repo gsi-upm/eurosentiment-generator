@@ -14,25 +14,88 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-from django.forms import ModelForm, Form, ModelChoiceField, FileField, BooleanField
-from .models import EuTemplate
+from django import forms
+from .models import EuTemplate, EuFormat, TranslationRequest
+import logging
 
+logger = logging.getLogger('eurosentiment')
 
-class TranslationRequestForm(Form):
-    template = ModelChoiceField(queryset=EuTemplate.objects.all(),
-                                to_field_name='name')
-    document = FileField()
-    toFile = BooleanField(initial=True, required=False, label="Save to file")
+class TranslationRequestForm(forms.ModelForm):
+    ALIASES = (
+        ('input', 'i'),
+        ('informat', 'f'),
+        ('intype', 't'),
+        ('outformat', 'o'),
+        ('base', 'u'),
+        ('prefix', 'p'),
+        ('template', 't')
+    )
+    required_css_class = 'required'
 
-    #class Meta:
-        #model = TranslationRequest
-        #fields = ['template', 'document']
+    def __init__(self, *args, **kwargs):
+        logger.debug('Creating with: ### %s' % repr( args))
+        myargs = args
+        for myarg in myargs:
+            for (arg, alias) in TranslationRequestForm.ALIASES:
+                if arg not in myarg and alias in myarg:
+                    myarg[arg] = myarg[alias]
+            if not 'intype' in myarg:
+                myarg['intype'] = 'DIRECT'
+            if 'input' in myarg:
+                if myarg['intype'] == 'FILE':
+                    myarg['document'] = myarg['input']
+                elif myarg['intype'] == 'URL':
+                    myarg['document_url'] = myarg['input']
+        super(TranslationRequestForm, self).__init__(*args, **kwargs)
+        self.fields['template'].required = False
+        self.fields['template'].empty_label = '- Auto select -'
+        self.fields['intype'].required = False
 
-    def is_valid(self):
-        print "Is valid form??"
-        super(TranslationRequestForm, self).is_valid()
-        cd = self.cleaned_data
-        print "Cleaned data"
-        #return "template" in cd and cd["template"] and \
-               #"document" in cd and cd["document"]
-        return True
+    class Meta:
+        model = TranslationRequest
+        fields = ['intype', 'document', 'document_url',
+                  'informat', 'outformat',
+                  'prefix', 'baseuri', 'template', 'toFile']
+
+    def is_valid(self, *args, **kwargs):
+        logger.debug('Data: ### %s' % self.data)
+        logger.debug('Dir: ### %s' % dir(self))
+        valid = True
+        self._errors = self._errors if self._errors else {}
+        if 'informat' in self.data:
+            try:
+                int(self.data['informat'])
+                EuFormat.objects.get(pk=self.data['informat'])
+            except:
+                try:
+                    logger.debug("Looking for name=%s" %self.data['informat'])
+                    logger.debug("Type=%s" %type(self.data['informat']))
+                    self.data['informat'] = EuFormat.objects.get(name=self.data['informat']).id
+                except:
+                    valid = False
+                    self._errors['informat'] = ['Not a valid input format',]
+        if 'outformat' not in self.data or 'outformat' == '':
+            logger.debug('Not a valid output format')
+            self._errors['outformat'] = ['Not a valid output format',]
+            valid = False
+        if 'template' not in self.data or self.data['template'] == "" and valid:
+            logger.debug("There is no template ####")
+            oformat = self.data['outformat']
+            iformat = self.data['informat']
+            self.data['template'] = EuTemplate.objects.get(outformat=oformat, informat=iformat).id
+        elif 'template' in self.data:
+            try:
+                if 'informat' not in self.data:
+                    self.data['informat'] = EuTemplate.objects.get(pk=self.data['template']).informat.id
+                if 'outformat' not in self.data:
+                    self.data['outformat'] = EuTemplate.objects.get(pk=self.data['template']).outformat.id
+                valid = True
+            except:
+                logger.debug('Exception in validation')
+                valid = False
+        if not valid:
+            return valid
+        # Haven't found a better way to do this. If self._errors is not None,
+        # cleaned_data is not generated
+        self._errors = None
+        return super(TranslationRequestForm, self).is_valid(*args, **kwargs)
