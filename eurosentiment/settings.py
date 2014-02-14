@@ -1,4 +1,21 @@
+# -*- coding: utf-8 -*-
 # Django settings for eurosentiment project.
+#
+#    Copyright 2013 J. Fernando Sánchez Rada - Grupo de Sistemas Inteligentes
+#                                                       DIT, UPM
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 import os, sys
 PROJECT_ROOT = os.path.dirname(os.path.normpath(os.path.abspath(__file__)+'../'))
 if PROJECT_ROOT not in sys.path:
@@ -14,17 +31,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
-    }
-}
+from eurosentiment.settings_private import *
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -55,7 +62,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = full_path('..', 'media')
+MEDIA_ROOT = '/var/www/eurosentiment/media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -66,7 +73,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = full_path('..', 'static')
+STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -88,7 +95,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = ''
+SECRET_KEY = 'nd2^1xto_tzfbawm0u=@hgy9ue0vre1c^*6uc%#=rs^)26q##2'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -116,7 +123,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    full_path('..','templates',
+    '/var/www/eurosentiment/templates',
 )
 
 INSTALLED_APPS = (
@@ -128,7 +135,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django_admin_bootstrapped',
     'django.contrib.admin',
-    'marlgenerator',
+    'generator',
     'south',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
@@ -184,18 +191,19 @@ LOGGING = {
         },
     },
     'handlers': {
-        'null': {
-            'level':'DEBUG',
-            'class':'django.utils.log.NullHandler',
-        },
-        #'logfile': {
+        #'null': {
             #'level':'DEBUG',
-            #'class':'logging.handlers.RotatingFileHandler',
-            #'filename': PROJECT_ROOT + "/logfile.log",
-            #'maxBytes': 50000,
-            #'backupCount': 2,
-            #'formatter': 'standard',
+            #'class':'django.utils.log.NullHandler',
         #},
+        'logfile': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            #'filename': PROJECT_ROOT + "/eurosentiment.log",
+            'filename': '/var/www/eurosentiment/errors.log',
+            'maxBytes': 50000,
+            'backupCount': 2,
+            'formatter': 'standard',
+        },
         'console':{
             'level':'ERROR',
             'class':'logging.StreamHandler',
@@ -204,18 +212,18 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers':['console'],
+            'handlers':['logfile'],
             'propagate': False,
             'level':'WARN',
         },
         'django.db.backends': {
-            'handlers': ['console'],
+            'handlers': ['logfile'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        #'eurosentiment': {
-            #'handlers': ['console', 'logfile'],
-            #'level': 'DEBUG',
-        #},
+        'eurosentiment': {
+            'handlers': ['console', 'logfile'],
+            'level': 'DEBUG',
+        },
     }
 }

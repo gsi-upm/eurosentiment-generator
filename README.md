@@ -54,7 +54,7 @@ Installation instructions
 ------------------------------
 This repository contains all the code necessary to run an eurosentiment-generator. To install it, follow the following steps:
 
-* Copy the eurosentiment/settings.py.template to eurosentiment/settings.py
+* Copy the eurosentiment/settings-private.py.template to eurosentiment/settings-private.py
 * Add your database information to settings.py
 * Create a virtualenv (preferably, in the project root)
 * Install the required packages:

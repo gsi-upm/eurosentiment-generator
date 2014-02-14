@@ -1,7 +1,7 @@
 generator/migrations
 *.swp
 .*
-settings.py
+settings_private.py
 static/admin
 static/bootstrap
 venv
