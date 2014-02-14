@@ -41,6 +41,7 @@ The Generator endpoint takes the following parameters:
     * trix
  * base URI (u) [Optional]: base URI to use for the corpus
  * prefix (p) [Optional]: prefix to replace the base URI
+ * language (l) [Optional]: language code (see dc:terms and [ISO 639](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) )
  * template (t) [Optional]: ID of the template to use. If it is omitted, a template to convert from informat to outformat will be used, or a template from informat to another format (e.g. json-ld), with automatic conversion.
  * toFile [Optional]: Whether the result should be sent in the response (default) or written to a file. For convenience, this value defaults to False when using the Web Form.
 
