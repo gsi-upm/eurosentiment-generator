@@ -111,5 +111,5 @@ Grant Agreement no: 296277
 Starting date: 01/09/2012
 Project duration: 24 months
 
-![Eurosentiment Logo](http://eurosentiment.eu/wp-content/themes/twentyten/images/logo_grande.png)
-![FP7 logo](http://eurosentiment.eu/wp-content/themes/twentyten/images/xlogo_fp7.gif.pagespeed.ic.9J-_8W8AHX.png)
+![Eurosentiment Logo](logo_grande.png)
+![FP7 logo](logo_fp7.gif)
