@@ -54,7 +54,7 @@ class TranslationRequestForm(forms.ModelForm):
     class Meta:
         model = TranslationRequest
         fields = ['intype', 'document', 'document_url',
-                  'informat', 'outformat',
+                  'informat', 'outformat', 'language',
                   'prefix', 'baseuri', 'template', 'toFile']
 
     def is_valid(self, *args, **kwargs):

@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'django_admin_bootstrapped',
     'django.contrib.admin',
     'generator',
+    'django_languages',
     'south',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

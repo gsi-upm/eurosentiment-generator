@@ -18,6 +18,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import datetime, date
+from django_languages.fields import LanguageField
 
 OUTFORMATS = (
     ('jsonld', 'JSON-LD'),
@@ -79,6 +80,9 @@ class EuTemplate(models.Model):
         verbose_name = "Conversion Template"
 
 
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^django_languages\.fields\.LanguageField"])
+
 class TranslationRequest(models.Model):
     INTYPES = (
         ('DIRECT', 'Direct'),
@@ -105,6 +109,7 @@ class TranslationRequest(models.Model):
                                  default='JSONLD')
     baseuri = models.CharField('Base URI', max_length=200, blank=True)
     prefix = models.CharField('Prefix', max_length=20, blank=True)
+    language = LanguageField('Language of the corpus', blank=True)
     ip = models.GenericIPAddressField('Request IP')
     toFile = models.BooleanField(default=True)
     started = models.DateTimeField()

@@ -59,8 +59,9 @@ def process(request):
                 logger.debug('Processed')
                 req.template = form.cleaned_data['template']
                 req.document = form.cleaned_data['document']
-                req.informat = req.template.informat
-                req.outformat = req.template.outformat
+                req.informat = form.cleaned_data['informat']
+                req.outformat = form.cleaned_data['outformat']
+                req.language = form.cleaned_data['language']
                 req.ip = get_client_ip(request)
                 logger.debug("Got IP")
                 req.save()
