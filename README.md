@@ -4,7 +4,7 @@
 
 Introduction
 ---------------------
-This tool will take several input formats and translates them to semantic formats. It focuses on outputting the [Marl](http://gsi.dit.upm.es/ontologies/marl) format in json-ld.
+This tool will take several input formats and translates them to semantic formats. It focuses on translating corpora to the NIF+[Marl](http://gsi.dit.upm.es/ontologies/marl) format, usin json-ld.
 
 Eurosentiment Generator is under heavy development. As of this writing, it supports:
 
@@ -46,7 +46,7 @@ The Generator endpoint takes the following parameters:
 
 Using the command line tool *curl*, a request can be made like this:
 
-    curl -F"template=Example_to_Marl" -F"input=@input-file.csv" -F"intype=DIRECT"
+    curl -F"template=Example_to_Marl" -F"input=@input-file.csv" -F"intype=FILE"
         http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator/process
         > result.jsonld
 
