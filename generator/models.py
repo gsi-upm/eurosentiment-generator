@@ -17,8 +17,9 @@
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from datetime import datetime, date
 from django_languages.fields import LanguageField
+from datetime import datetime
+
 
 OUTFORMATS = (
     ('jsonld', 'JSON-LD'),
@@ -27,6 +28,7 @@ OUTFORMATS = (
     ('trix', 'TRIX'),
 )
 
+
 def validate_name(name):
     valid = True
     try:
@@ -34,30 +36,36 @@ def validate_name(name):
     except UnicodeEncodeError:
         valid = False
     if not valid:
-        raise ValidationError('Choose a name with ascii characters, without spaces')
+        raise ValidationError('Choose a name with ascii characters,\
+                              without spaces')
     return valid
 
 
 class EuFormat(models.Model):
+    TXT = 'plaintext'
     CSV = 'csv'
     TSV = 'tsv'
     ODS = 'ods'
     XLS = 'xls'
     JSONLD = 'jsonld'
     XML = 'xml'
-    fileformats = ((CSV, 'csv - Comma Separated Values'),
+    fileformats = ((TXT, 'txt - Plain text'),
+                   (CSV, 'csv - Comma Separated Values'),
                    (TSV, 'tsv - Tab Separated Values'),
                    (ODS, 'ods - Open Document Spreadsheet'),
                    (XLS, 'xls - Microsoft Excel Spreadsheet'),
                    (JSONLD, 'json-ld - JSON for Linked Data'),
-                   (XML, 'XML - XML format')
-                    )
+                   (XML, 'XML - XML format'))
     name = models.CharField('Format name', max_length=200, unique=True)
-    extension = models.CharField('File extension', max_length=10, choices=fileformats, default=CSV)
-    mimetype = models.CharField('MIME type', max_length=25, default='text/plain')
+    extension = models.CharField('File extension', max_length=10,
+                                 choices=fileformats, default=CSV)
+    mimetype = models.CharField('MIME type', max_length=25,
+                                default='text/plain')
     description = models.TextField('Description of the format', max_length=200)
-    example = models.FileField('Example of the format', upload_to='examples', blank=True)
-    usedTimes = models.IntegerField('Times it has been used', default=0, editable=False)
+    example = models.FileField('Example of the format',
+                               upload_to='examples', blank=True)
+    usedTimes = models.IntegerField('Times it has been used',
+                                    default=0, editable=False)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -67,11 +75,15 @@ class EuFormat(models.Model):
 
 
 class EuTemplate(models.Model):
-    name = models.CharField('Template name', max_length=200, validators=[validate_name], unique=True)
+    name = models.CharField('Template name', max_length=200,
+                            validators=[validate_name], unique=True)
     text = models.TextField('Template')
-    informat = models.ForeignKey(EuFormat, related_name='templateinput', verbose_name='Input format')
-    outformat = models.CharField(max_length=10, choices=OUTFORMATS, verbose_name='Output format')
-    usedTimes = models.IntegerField('Times it has been used', default=0, editable=False)
+    informat = models.ForeignKey(EuFormat, related_name='templateinput',
+                                 verbose_name='Input format')
+    outformat = models.CharField(max_length=10, choices=OUTFORMATS,
+                                 verbose_name='Output format')
+    usedTimes = models.IntegerField('Times it has been used',
+                                    default=0, editable=False)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -82,6 +94,7 @@ class EuTemplate(models.Model):
 
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django_languages\.fields\.LanguageField"])
+
 
 class TranslationRequest(models.Model):
     INTYPES = (
