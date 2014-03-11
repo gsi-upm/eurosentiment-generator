@@ -59,6 +59,7 @@ def process(request):
                 logger.debug('Processed')
                 req.template = form.cleaned_data['template']
                 req.document = form.cleaned_data['document']
+                req.document_url = form.cleaned_data['document_url']
                 req.informat = form.cleaned_data['informat']
                 req.outformat = form.cleaned_data['outformat']
                 req.language = form.cleaned_data['language']

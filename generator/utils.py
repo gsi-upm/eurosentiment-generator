@@ -16,22 +16,31 @@
 #    limitations under the License.
 
 
-from jinja2 import Template, Environment
+from jinja2 import Environment
 from django.shortcuts import render
 from django.http import HttpResponse
-import traceback
+from django.conf import settings
 import json
 import xlrd
+import sys
+import os
 from lxml import etree
+from datetime import datetime
+import requests
 
 # import the logging library
 import logging
 # Get an instance of a logger
 logger = logging.getLogger('eurosentiment')
 
+
 def linesplit(value, separator=' '):
     #print "Received object: %s" % value
     return value.strip().split(separator)
+
+
+def convertDate(value, informat="%d-%B-%Y", outformat="%Y-%m-%d-"):
+    return datetime.strptime(value, informat).strftime(outformat)
 
 
 def escapejs(val):
@@ -41,6 +50,7 @@ def escapejs(val):
             logger.error(ex)
             return ""
 
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -49,21 +59,39 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+
+def download_file(url):
+    local_filename = os.path.join(settings.MEDIA_ROOT, url.split('/')[-1])
+    # NOTE the stream=True parameter
+    r = requests.get(url, stream=True)
+    with open(local_filename, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:   # filter out keep-alive new chunks
+                f.write(chunk)
+                f.flush()
+    return local_filename
+
+
 def process_document(trans, form, httprequest):
     logger.debug("PROCESSING!!")
     data = form.cleaned_data
     logger.debug("DATA!! %s" % data)
-    env = Environment(trim_blocks=True,lstrip_blocks=True )
+    env = Environment(trim_blocks=True, lstrip_blocks=True, extensions=['jinja2.ext.do',])
     env.globals['linesplit'] = linesplit
+    env.globals['convertDate'] = convertDate
     env.filters['escapejs'] = escapejs
     logger.debug('not past template')
-    logger.debug('Template: %s - %s' % (type(trans.template.text), trans.template.text))
+    logger.debug('Template: %s - %s' % (type(trans.template.text),
+                                        trans.template.text))
     template = env.from_string(trans.template.text)
     logger.debug('past template')
-    filename = trans.document.path
-    iext = ".%s" % trans.informat.extension
-    oext = ".%s" % trans.outformat
-    outputfile = "%s-%s%s" % (iext.join(filename.rsplit(iext)[:-1]), "translated", oext)
+    try:
+        filename = trans.document.path
+    except:
+        filename = download_file(trans.document_url)
+    iext = trans.informat.extension
+    oext = trans.outformat
+    outputfile = "%s-%s.%s" % (filename.rsplit(iext, 1)[0], "translated", oext)
     logger.debug("######## File: %s" % outputfile)
     if trans.informat.mimetype == 'application/vnd.ms-excel':
         logger.debug('An office file!')
@@ -89,4 +117,4 @@ def process_document(trans, form, httprequest):
             logger.debug(exc_type, fname, exc_tb.tb_lineno)
             logger.debug('Raising')
             raise ex
-    return HttpResponse(stream, mimetype="text/html")
+    return HttpResponse(stream, mimetype="text/plain")

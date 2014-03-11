@@ -42,7 +42,7 @@ def validate_name(name):
 
 
 class EuFormat(models.Model):
-    TXT = 'plaintext'
+    TXT = 'txt'
     CSV = 'csv'
     TSV = 'tsv'
     ODS = 'ods'
