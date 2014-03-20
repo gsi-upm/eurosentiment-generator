@@ -5,8 +5,10 @@ MySQL-python==1.2.4
 South==0.8.2
 argparse==1.2.1
 distribute==0.7.3
+django-ace==1.0.1
 django-admin-bootstrapped==0.4.3
 django-autoslug==1.7.2
+django-codemirror-widget==0.3.0
 django-languages==0.1
 lxml==3.3.1
 pycountry==1.4

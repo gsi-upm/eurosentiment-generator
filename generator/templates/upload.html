@@ -6,21 +6,30 @@
             var documentfield = document.getElementById("id_document").parentNode;
             var urlfield = document.getElementById("id_document_url").parentNode;
             var intype = document.getElementById("id_intype");
-            for (var i=0; i<intype.length; i++){
-                if (intype.options[i].value == 'DIRECT' )
-                        intype.remove(i);
-            }
+            var textfield = document.getElementById("id_text");
+            <!--for (var i=0; i<intype.length; i++){-->
+                <!--if (intype.options[i].value == 'DIRECT' )-->
+                        <!--intype.remove(i);-->
+            <!--}-->
             urlfield.style.display = 'None';
+            textfield.style.display = 'None';
             documentfield.style.display = 'inline';
             console.log("tweakform", intype);
             intype.onchange = function(){
                 if( intype.value === 'FILE'){
-                    urlfield.style.display = 'None';
+                    textfield.style.display = 'none';
+                    urlfield.style.display = 'none';
                     documentfield.style.display = 'inline';
                 }else if ( intype.value === 'URL' ){
+                    textfield.style.display = 'none';
                     urlfield.style.display = 'inline';
                     documentfield.style.display = 'none';
+                }else if ( intype.value === 'DIRECT' ){
+                    textfield.style.display = 'inline';
+                    urlfield.style.display = 'none';
+                    documentfield.style.display = 'none';
                 }else{
+                    textfield.style.display = 'none';
                     urlfield.style.display = 'none';
                     documentfield.style.display = 'none';
                 }
@@ -36,4 +45,3 @@
 </form>
 
 {% endblock %}
-

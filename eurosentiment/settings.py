@@ -73,7 +73,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = '/var/www/eurosentiment/static/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -91,7 +91,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'generator',
     'django_languages',
     'south',
+    'codemirror',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -200,7 +201,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
             #'filename': PROJECT_ROOT + "/eurosentiment.log",
-            'filename': '/var/www/eurosentiment/errors.log',
+            'filename': '/var/www/eurosentiment/logs/errors.log',
             'maxBytes': 50000,
             'backupCount': 2,
             'formatter': 'standard',
@@ -228,3 +229,8 @@ LOGGING = {
         },
     }
 }
+
+if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+    DATABASES['default']['NAME'] = full_path('test.db')
+    MEDIA_ROOT = "%s/tmp/" % MEDIA_ROOT

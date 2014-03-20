@@ -20,6 +20,7 @@ from jinja2 import Environment
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
+from django.forms.models import model_to_dict
 import json
 import xlrd
 import sys
@@ -72,25 +73,36 @@ def download_file(url):
     return local_filename
 
 
-def process_document(trans, form, httprequest):
+def process_document(trans, httprequest):
     logger.debug("PROCESSING!!")
-    data = form.cleaned_data
+    data = model_to_dict(trans)
     logger.debug("DATA!! %s" % data)
     env = Environment(trim_blocks=True, lstrip_blocks=True, extensions=['jinja2.ext.do',])
     env.globals['linesplit'] = linesplit
     env.globals['convertDate'] = convertDate
     env.filters['escapejs'] = escapejs
-    logger.debug('not past template')
     logger.debug('Template: %s - %s' % (type(trans.template.text),
                                         trans.template.text))
     template = env.from_string(trans.template.text)
-    logger.debug('past template')
-    try:
-        filename = trans.document.path
-    except:
-        filename = download_file(trans.document_url)
     iext = trans.informat.extension
     oext = trans.outformat
+    if trans.intype == "file":
+        logger.debug('file')
+        filename = trans.document.path
+    elif trans.intype == "url":
+        logger.debug('url')
+        filename = download_file(trans.document_url)
+    else:
+        logger.debug('direct')
+        filename = os.path.join(settings.MEDIA_ROOT, "direct.%s" % iext )
+        idx = 0
+        while os.path.isfile(filename):
+            idx = idx+1
+            filename = os.path.join(settings.MEDIA_ROOT, "direct%s.%s" % (idx, iext ))
+        savedfile = open(filename, 'wb')
+        savedfile.write(trans.text)
+
+        savedfile.close()
     outputfile = "%s-%s.%s" % (filename.rsplit(iext, 1)[0], "translated", oext)
     logger.debug("######## File: %s" % outputfile)
     if trans.informat.mimetype == 'application/vnd.ms-excel':
@@ -102,8 +114,10 @@ def process_document(trans, form, httprequest):
     else:
         f = open(filename, 'r')
     data['f'] = f
+    logger.debug('pre-stream')
     stream = template.stream(data, filename=filename)
-    if "toFile" in form.cleaned_data and form.cleaned_data["toFile"]:
+    logger.debug('post-stream')
+    if "toFile" in data and data["toFile"]:
         try:
             stream.dump(outputfile)
             #I could do it with array splicing, but it'll
@@ -114,7 +128,8 @@ def process_document(trans, form, httprequest):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             logger.debug('Something bad happened during process:')
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            logger.debug(exc_type, fname, exc_tb.tb_lineno)
+            logger.debug('Info: %s %s %s' % (exc_type, fname, exc_tb.tb_lineno))
             logger.debug('Raising')
             raise ex
+    logger.debug( "Returning stream")
     return HttpResponse(stream, mimetype="text/plain")

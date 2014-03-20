@@ -36,7 +36,7 @@ def home(request):
     supported = {}
     templates = EuTemplate.objects.all()
     for t in templates:
-        supported[t] = {'input': t.informat, 'output': t.informat}
+        supported[t] = {'input': t.informat, 'output': t.outformat}
     logger.debug(supported)
     return render_to_response('home.html', {'supported': supported},
                               RequestContext(request))
@@ -60,13 +60,16 @@ def process(request):
                 req.template = form.cleaned_data['template']
                 req.document = form.cleaned_data['document']
                 req.document_url = form.cleaned_data['document_url']
+                req.text = form.cleaned_data['text']
+                req.intype = form.cleaned_data['intype']
                 req.informat = form.cleaned_data['informat']
                 req.outformat = form.cleaned_data['outformat']
                 req.language = form.cleaned_data['language']
+                req.toFile = form.cleaned_data['toFile']
                 req.ip = get_client_ip(request)
                 logger.debug("Got IP")
                 req.save()
-                return process_document(req, form, request)
+                return process_document(req, request)
             except Exception as ex:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 logger.debug('Something bad happened in view:')

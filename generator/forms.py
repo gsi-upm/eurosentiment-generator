@@ -40,26 +40,35 @@ class TranslationRequestForm(forms.ModelForm):
             for (arg, alias) in TranslationRequestForm.ALIASES:
                 if arg not in myarg and alias in myarg:
                     myarg[arg] = myarg[alias]
-            if not 'intype' in myarg:
-                myarg['intype'] = 'DIRECT'
-            if 'input' in myarg:
-                if myarg['intype'] == 'FILE':
-                    myarg['document'] = myarg['input']
-                elif myarg['intype'] == 'URL':
-                    myarg['document_url'] = myarg['input']
-        super(TranslationRequestForm, self).__init__(*args, **kwargs)
+        if(len(myargs) > 1):
+            nonfiles = myargs[0]
+            files = myargs[1]
+            logger.debug('Nonfiles: ### %s' % repr(nonfiles))
+            if not 'intype' in nonfiles:
+                nonfiles['intype'] = 'direct'
+            if nonfiles['intype'] == 'file' and 'document' not in files:
+                files['document'] = files['input']
+            elif nonfiles['intype'] == 'url' and 'document_url' not in nonfiles:
+                nonfiles['document_url'] = nonfiles['input']
+            elif nonfiles['intype'] == 'direct' and 'text' not in nonfiles:
+                nonfiles['text'] = nonfiles['input']
+            myargs = (nonfiles, files)
+        logger.debug('Using: ### %s' % repr(myargs))
+        super(TranslationRequestForm, self).__init__(*myargs, **kwargs)
         self.fields['template'].required = False
         self.fields['template'].empty_label = '- Auto select -'
         self.fields['intype'].required = False
+        self.fields['text'].required = False
 
     class Meta:
         model = TranslationRequest
-        fields = ['intype', 'document', 'document_url',
+        fields = ['intype', 'document', 'document_url', 'text',
                   'informat', 'outformat', 'language',
                   'prefix', 'baseuri', 'template', 'toFile']
 
     def is_valid(self, *args, **kwargs):
         logger.debug('Data: ### %s' % self.data)
+
         logger.debug('Dir: ### %s' % dir(self))
         valid = True
         self._errors = self._errors if self._errors else {}
@@ -71,7 +80,7 @@ class TranslationRequestForm(forms.ModelForm):
                 try:
                     logger.debug("Looking for name=%s" %self.data['informat'])
                     logger.debug("Type=%s" %type(self.data['informat']))
-                    self.data['informat'] = EuFormat.objects.get(name=self.data['informat']).id
+                    self.data['informat'] = EuFormat.objects.get(name=self.data['informat'])
                 except:
                     valid = False
                     self._errors['informat'] = ['Not a valid input format',]
@@ -83,7 +92,7 @@ class TranslationRequestForm(forms.ModelForm):
             logger.debug("There is no template ####")
             oformat = self.data['outformat']
             iformat = self.data['informat']
-            self.data['template'] = EuTemplate.objects.get(outformat=oformat, informat=iformat).id
+            self.data['template'] = EuTemplate.objects.filter(outformat=oformat, informat=iformat)[0].id
         elif 'template' in self.data:
             try:
                 if 'informat' not in self.data:

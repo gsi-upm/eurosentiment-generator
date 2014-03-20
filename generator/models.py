@@ -56,7 +56,7 @@ class EuFormat(models.Model):
                    (XLS, 'xls - Microsoft Excel Spreadsheet'),
                    (JSONLD, 'json-ld - JSON for Linked Data'),
                    (XML, 'XML - XML format'))
-    name = models.CharField('Format name', max_length=200, unique=True)
+    name = models.CharField('Format name', max_length=200, primary_key=True)
     extension = models.CharField('File extension', max_length=10,
                                  choices=fileformats, default=CSV)
     mimetype = models.CharField('MIME type', max_length=25,
@@ -98,9 +98,9 @@ add_introspection_rules([], ["^django_languages\.fields\.LanguageField"])
 
 class TranslationRequest(models.Model):
     INTYPES = (
-        ('DIRECT', 'Direct'),
-        ('FILE', 'File'),
-        ('URL', 'Specify the file URL'),
+        ('file', 'File'),
+        ('url', 'Specify the file URL'),
+        ('direct', 'Direct'),
     )
 
     def doc_url(self, filename):
@@ -113,6 +113,7 @@ class TranslationRequest(models.Model):
                                  verbose_name='Template used')
     document = models.FileField(upload_to=doc_url, blank=True)
     document_url = models.URLField(blank=True)
+    text = models.TextField('Direct input')
     intype = models.CharField('Input Type', max_length=10, blank=False,
                               choices=INTYPES, default='FILE')
     informat = models.ForeignKey(EuFormat, related_name='fileinput',

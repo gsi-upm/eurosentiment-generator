@@ -16,7 +16,24 @@
 
 
 from django.contrib import admin
+from codemirror.widgets import CodeMirrorTextarea
+from django import forms
+
 from models import EuTemplate, EuFormat, TranslationRequest
+
+
+class TemplateAdminForm(forms.ModelForm):
+    class Meta:
+        model = EuTemplate
+        widgets = {'text': CodeMirrorTextarea(theme="neat",
+                                              attrs={"cols": 10, "max-width": "100px"},
+                                              config={'matchBrackets': True,
+                                                      'autoCloseBrackets': True,
+                                                      'lineWrapping': True})}
+
+
+class TemplateAdmin(admin.ModelAdmin):
+    form = TemplateAdminForm
 
 
 class RequestAdmin(admin.ModelAdmin):
@@ -27,6 +44,6 @@ class RequestAdmin(admin.ModelAdmin):
     list_filter = ('started', 'template', 'informat',
                    'outformat', 'ip', 'document')
 
-admin.site.register(EuTemplate)
+admin.site.register(EuTemplate, TemplateAdmin)
 admin.site.register(EuFormat)
 admin.site.register(TranslationRequest, RequestAdmin)
