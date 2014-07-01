@@ -47,11 +47,11 @@ class TranslationRequestForm(forms.ModelForm):
             if not 'intype' in nonfiles:
                 nonfiles['intype'] = 'direct'
             if nonfiles['intype'] == 'file' and 'document' not in files:
-                files['document'] = files['input']
+                files['document'] = files.get('input', None)
             elif nonfiles['intype'] == 'url' and 'document_url' not in nonfiles:
-                nonfiles['document_url'] = nonfiles['input']
+                nonfiles['document_url'] = nonfiles.get('input', None)
             elif nonfiles['intype'] == 'direct' and 'text' not in nonfiles:
-                nonfiles['text'] = nonfiles['input']
+                nonfiles['text'] = nonfiles.get('input', None)
             myargs = (nonfiles, files)
         logger.debug('Using: ### %s' % repr(myargs))
         super(TranslationRequestForm, self).__init__(*myargs, **kwargs)
@@ -90,18 +90,24 @@ class TranslationRequestForm(forms.ModelForm):
             valid = False
         if 'template' not in self.data or self.data['template'] == "" and valid:
             logger.debug("There is no template ####")
-            oformat = self.data['outformat']
-            iformat = self.data['informat']
-            self.data['template'] = EuTemplate.objects.filter(outformat=oformat, informat=iformat)[0].id
+            try:
+                oformat = self.data['outformat']
+                iformat = self.data['informat']
+                self.data['template'] = EuTemplate.objects.filter(outformat=oformat, informat=iformat)[0].id
+            except:
+                self._errors['template'] = ['No template found for intype and outtype',]
+                valid = False
         elif 'template' in self.data:
             try:
+                self.data['template'] = EuTemplate.objects.get(name=self.data['template']).id
                 if 'informat' not in self.data:
-                    self.data['informat'] = EuTemplate.objects.get(pk=self.data['template']).informat.id
+                    self.data['informat'] = EuTemplate.objects.get(pk=self.data['template']).informat.name
                 if 'outformat' not in self.data:
-                    self.data['outformat'] = EuTemplate.objects.get(pk=self.data['template']).outformat.id
+                    self.data['outformat'] = EuTemplate.objects.get(pk=self.data['template']).outformat
                 valid = True
-            except:
-                logger.debug('Exception in validation')
+            except Exception as ex:
+                self._errors['template'] = ['Invalid template metadata %s' % ex]
+                logger.debug('Exception in validation: ', ex)
                 valid = False
         if not valid:
             return valid

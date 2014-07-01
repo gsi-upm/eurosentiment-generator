@@ -49,7 +49,7 @@ def escapejs(val):
             return json.dumps(val)
         except Exception as ex:
             logger.error(ex)
-            return ""
+            return "\"\""
 
 
 def get_client_ip(request):
@@ -80,6 +80,7 @@ def process_document(trans, httprequest):
     env = Environment(trim_blocks=True, lstrip_blocks=True, extensions=['jinja2.ext.do',])
     env.globals['linesplit'] = linesplit
     env.globals['convertDate'] = convertDate
+    env.globals['len'] = len
     env.filters['escapejs'] = escapejs
     logger.debug('Template: %s - %s' % (type(trans.template.text),
                                         trans.template.text))

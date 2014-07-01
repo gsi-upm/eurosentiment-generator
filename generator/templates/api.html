@@ -32,7 +32,7 @@ these parameters:
     <dt>prefix (p) [Optional]:</dt>
         <dd>prefix to replace the base URI</dd>
     <dt>template (t) [Optional]:<dt>
-        <dd>ID of the template to use. If it is omitted, a template to convert from informat to outformat will be used, or a template from informat to another format (e.g. json-ld), with automatic conversion.
+        <dd>ID of the template to use. If it is omitted, a template to convert from informat to outformat will be used, or a template from informat to another format (e.g. jsonld), with automatic conversion.
     <dt>toFile [Optional]:</dt>
         <dd>Whether the result should be sent in the response (default) or written to a file. For convenience, this value defaults to False when using the Web Form.</dd>  
 </dl>
@@ -41,9 +41,9 @@ these parameters:
 </p>
 <pre>
 <code>
-    curl http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator/process \
-    -F"intype=FILE" -F"template=Example_to_Marl" -F"input=@input-file.csv" \
-    > result.jsonld
+curl http://demos.gsi.dit.upm.es/eurosentiment/marlgenerator/process \
+-F"intype=file" -F"informat=Example" -F"outformat=jsonld" -F"input=@input-file.csv" \
+> result.jsonld
 </code>
 </pre>
 

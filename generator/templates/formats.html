@@ -20,8 +20,8 @@
 {% for template in templates %}
 <li> {{ template.name }}
 <ul>
-    <li> Input: {{ template.inputformat.name }}</li>
-    <li> Output: {{ template.outputformat.name }}</li>
+    <li> Input: {{ template.informat }}</li>
+    <li> Output: {{ template.outformat }}</li>
 </ul>
 </li>
 {% endfor %}

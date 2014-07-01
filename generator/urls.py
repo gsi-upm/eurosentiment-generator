@@ -30,6 +30,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      url(r'^$', views.home),
+     url(r'^process_home/?$', views.process_home),
      url(r'^process/?$', views.process),
      url(r'^formats/?$', views.formats),
      url(r'^api/?$', views.api),
