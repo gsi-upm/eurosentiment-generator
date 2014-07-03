@@ -124,7 +124,13 @@ def process_document(trans, httprequest):
             #I could do it with array splicing, but it'll
             #be easier to find this in the future
             fname = outputfile.split('/var/www')[1]
-            return render(httprequest, 'success.html', {'file': fname})
+            size = os.path.getsize(outputfile)
+            accept = httprequest.META.get('HTTP_ACCEPT', 'application/json').split(",")
+            if 'text/html' in accept:
+                return render(httprequest, 'success.html', {'file': fname})
+            else:
+                resp = '{"file": "%s", "status": "success", "size": "%s"}' % (fname, size)
+                return HttpResponse(resp, mimetype='application/json')
         except Exception as ex:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             logger.debug('Something bad happened during process:')
