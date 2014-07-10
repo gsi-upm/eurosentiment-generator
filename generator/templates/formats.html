@@ -7,7 +7,7 @@
 {% for format in formats %}
 <li> {{ format.name }}
 <ul>
-    <li> {{ format.description }}</li>
+    <li> <pre>{{ format.description }}</pre></li>
     {% if format.example %}
     <li> <a href="{{ format.example.path | to_url }}" >Example file</a> </li> 
     {% endif %}
@@ -15,16 +15,16 @@
 </li>
 {% endfor %}
 </ul>
-<h1>Templates available</h1>
-<ul>
+<!--<h1>Templates available</h1>-->
+<!--<ul>-->
 {% for template in templates %}
-<li> {{ template.name }}
-<ul>
-    <li> Input: {{ template.informat }}</li>
-    <li> Output: {{ template.outformat }}</li>
-</ul>
-</li>
+<!--<li> {{ template.name }}-->
+<!--<ul>-->
+    <!--<li> Input: {{ template.informat }}</li>-->
+    <!--<li> Output: {{ template.outformat }}</li>-->
+<!--</ul>-->
+<!--</li>-->
 {% endfor %}
-</ul>
+<!--</ul>-->
 
 {% endblock %}
